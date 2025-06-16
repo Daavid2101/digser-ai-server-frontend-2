@@ -1,0 +1,133 @@
+/* Container für das gesamte Formular */
+.initialization-form {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+/* Überschriften für die einzelnen Bereiche */
+.initialization-form h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #333;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+
+.field-label {
+    display: block;
+    width: 100%;
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+/* Container für einzelne Formularabschnitte */
+.form-section {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.form-section label {
+    display: block;
+    width: 100%;
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.form-section input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-top: 5px;
+}
+
+/* Styling für Labels und File Inputs */
+.initialization-form label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #555;
+}
+
+.initialization-form input[type="file"] {
+    display: block;
+    margin-top: 5px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fafafa;
+}
+
+/* Container für Datei-Vorschauen */
+.file-preview-container {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* Einzelne Datei-Vorschau-Elemente */
+.file-preview-item {
+    position: relative;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 100px;
+    height: 100px;
+    padding: 5px;
+    background-color: #f9f9f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* Bild-Vorschau anpassen */
+.file-preview-item img {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+}
+
+/* Entfernen-Button innerhalb der Vorschau */
+.file-preview-item .remove-btn {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: #dc3545;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    text-align: center;
+    line-height: 18px;
+}
+
+/* Button für die Initialisierung */
+.initialization-form button[type="submit"] {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.initialization-form button[type="submit"]:hover {
+    background-color: #0056b3;
+}

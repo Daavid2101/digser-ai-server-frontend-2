@@ -1,0 +1,517 @@
+/* Container für die gesamte Plausibilitätsprüfungs-Seite */
+.plausibility-container {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Header */
+.plausi-header {
+    background-color: #ffffff;
+    padding: 10px 20px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.header-left,
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+.header-expand-btn {
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px;
+    transition: transform 0.3s;
+}
+
+.header-expand-btn:hover {
+    transform: scale(1.1);
+}
+
+.back-to-dashboard-btn {
+    background-color: transparent;
+    color: #6c757d;
+    padding: 8px 16px;
+    border: 1px solid #6c757d;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-right: 10px;
+    transition: color 0.3s, border-color 0.3s;
+}
+
+.back-to-dashboard-btn:hover {
+    color: #0056b3;
+    border-color: #0056b3;
+}
+
+/* Fixierte Sidebar links */
+.plausi-sidebar-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100%;
+    background-color: #1e1e2f;
+    border-right: 1px solid #333;
+    overflow-y: auto;
+    transition: width 0.3s;
+    z-index: 2000;
+}
+
+/* Sidebar-Inhalt */
+.plausi-sidebar {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #1e1e2f;
+    color: #fff;
+}
+
+.plausi-sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    font-size: 1rem;
+    background-color: #2a2a40;
+    border-bottom: 1px solid #333;
+}
+
+.plausi-sidebar-collapse-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px;
+    transition: transform 0.3s;
+}
+
+.plausi-sidebar-collapse-btn:hover {
+    transform: scale(1.1);
+}
+
+.plausi-sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1;
+}
+
+.plausi-sidebar-menu li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    cursor: pointer;
+    border-bottom: 1px solid #333;
+}
+
+.plausi-sidebar-menu li:hover {
+    background-color: #2a2a40;
+}
+
+.plausi-sidebar-menu li.active {
+    background-color: #0078d4;
+    color: #fff;
+    font-weight: bold;
+}
+
+.plausi-sidebar-footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: #2a2a40;
+    border-top: 1px solid #333;
+    padding: 10px 0;
+}
+
+.add-tasks-button {
+    width: 100%;
+    background: none;
+    color: #fff;
+    border: none;
+    outline: none;
+    padding: 15px 20px;
+    text-align: left;
+    cursor: pointer;
+    font-size: 1rem;
+    border-bottom: 1px solid #333;
+}
+
+.add-tasks-button:hover {
+    background-color: #353547;
+}
+
+/* Hauptbereich */
+.plausibility-main-content {
+    margin-left: 250px;
+    margin-top: 50px;
+    /* Platz für den Header */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    overflow-y: auto;
+    height: calc(100vh - 50px);
+}
+
+/* Bereiche für Checks, New-Check, Placeholder */
+.existing-check,
+.new-check,
+.placeholder {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+}
+
+.existing-check h2,
+.new-check h2,
+.placeholder h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #343a40;
+    font-weight: 500;
+}
+
+/* Placeholder */
+.placeholder {
+    text-align: center;
+    padding: 50px 20px;
+}
+
+/* Output-Bereich als eleganter Report */
+.output-area {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px;
+    width: calc(100% - 40px);
+    max-width: 830px;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: Arial, serif;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.output-area h3 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    color: #343a40;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 5px;
+}
+
+.output-area pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin: 0;
+    padding: 0;
+    color: #495057;
+}
+
+/* Datei-Upload Feld */
+.file-upload {
+    border: 2px dashed #007bff;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+    color: #343a40;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    width: calc(100% - 40px);
+    max-width: 830px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.file-upload:hover {
+    background-color: #e9ecef;
+}
+
+.select-file {
+    color: #007bff;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/* Start-Button */
+.start-check-button {
+    background-color: #007bff;
+    border: none;
+    color: #fff;
+    font-size: 1rem;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    align-self: center;
+    /* Für Flex-Container */
+    display: block;
+    /* Stellt sicher, dass Margins wirken */
+    margin-left: auto;
+    /* Zentriert horizontal */
+    margin-right: auto;
+    /* Zentriert horizontal */
+}
+
+.start-check-button:hover {
+    background-color: #0056b3;
+}
+
+/* Modal Overlay */
+.plausi-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+/* Modal Fenster */
+.plausi-modal {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.plausi-modal h3 {
+    margin-top: 0;
+    text-align: center;
+    width: 100%;
+    color: #343a40;
+}
+
+.plausi-modal input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.plausi-modal-buttons {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.plausi-modal-buttons button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.plausi-modal-buttons button:first-child {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.plausi-modal-buttons button:first-child:hover {
+    background-color: #0056b3;
+}
+
+.plausi-modal-buttons button:last-child {
+    background-color: #e9ecef;
+    color: #343a40;
+}
+
+.plausi-modal-buttons button:last-child:hover {
+    background-color: #ced4da;
+}
+
+/* PDF Preview */
+.pdf-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.attachment-pdf-icon {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #333;
+    background-color: #e9ecef;
+    border-radius: 5px;
+    padding: 8px;
+}
+
+.remove-file-btn {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: none;
+    border: none;
+    color: #dc3545;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.remove-file-btn:hover {
+    color: #c82333;
+}
+
+.pdf-filename {
+    margin-top: 5px;
+    font-size: 0.9rem;
+    text-align: center;
+    color: #6c757d;
+}
+
+/* Scoring-Bereich */
+.scoring-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin: 20px auto;
+    max-width: 830px;
+}
+
+.score-circle {
+    margin: 10px;
+    text-align: center;
+}
+
+.circular-chart {
+    width: 80px;
+    height: 80px;
+    transform: rotate(-90deg);
+}
+
+.circle-bg {
+    fill: none;
+    stroke: #eee;
+    stroke-width: 3.8;
+}
+
+.circle {
+    fill: none;
+    stroke: #007bff;
+    stroke-width: 2.8;
+    stroke-linecap: round;
+    transition: stroke-dasharray 0.3s ease;
+}
+
+.percentage {
+    font-size: 0.8rem;
+    /* Optional, but inline style takes precedence */
+    fill: #333;
+    text-anchor: middle;
+    dominant-baseline: central;
+}
+
+.score-label {
+    margin-top: 5px;
+    font-size: 0.9rem;
+    color: #343a40;
+}
+
+/* Responsive Anpassungen */
+@media (max-width: 768px) {
+    .plausi-sidebar-container {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .plausibility-main-content {
+        margin-left: 0;
+        padding: 10px;
+    }
+
+    .plausi-sidebar-menu li {
+        padding: 10px;
+    }
+
+    .output-area {
+        width: calc(100% - 20px);
+        margin: 10px;
+        padding: 15px;
+    }
+
+    .file-upload {
+        width: calc(100% - 20px);
+        margin: 10px auto;
+        padding: 15px;
+    }
+}
+
+
+
+
+.delete-check-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-left: 10px;
+    transition: color 0.2s;
+}
+
+.delete-check-btn:hover {
+    color: #dc3545;
+}
+
+.spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    border-top-color: rgba(3, 47, 178, 0.8);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

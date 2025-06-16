@@ -1,0 +1,1363 @@
+/* Dashboard Styles */
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #ffffff;
+}
+
+/* Hauptcontainer: drei Spalten (Sidebar links, Main Content in der Mitte, Preview rechts) */
+.dashboard-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Sidebar Container (linke Spalte) */
+.sidebar-container {
+  position: relative;
+  background-color: #1e1e2f;
+  transition: width 0.3s;
+  overflow: hidden;
+  /* Verhindert Scrollbars bei 0px-Breite */
+  height: 100%;
+  border-right: 1px solid #333;
+}
+
+/* Sidebar-Inhalt */
+.projects-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 10px;
+}
+
+.sidebar {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  background-color: #1e1e2f;
+  color: #fff;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* Titel links, Button rechts */
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #2a2a40;
+  border-bottom: 1px solid #333;
+}
+
+/* Expand-Button (Sidebar, im Header, wenn Sidebar collapsed) */
+.header-expand-btn {
+  background: none;
+  border: none;
+  color: #333;
+  /* dunkelgrau oder schwarz */
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 5px;
+  transition: transform 0.3s;
+}
+
+.header-expand-btn:hover {
+  transform: scale(1.1);
+}
+
+/* Expand-Button für Preview (im globalen Header rechts, wenn Preview collapsed) */
+.header-plausibility-btn {
+  background-color: transparent;
+  color: #6c757d;
+  padding: 8px 16px;
+  border: 1px solid #6c757d;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: 10px;
+  transition: color 0.3s, border-color 0.3s;
+}
+
+.header-plausibility-btn:hover {
+  color: #0056b3;
+  border-color: #0056b3;
+}
+
+.header-preview-expand-btn {
+  background: none;
+  border: none;
+  color: #333;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 5px;
+  transition: transform 0.3s;
+}
+
+.header-preview-expand-btn:hover {
+  transform: scale(1.1);
+}
+
+/* Button zum Einklappen in der Sidebar – bleibt weiß */
+.sidebar-collapse-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 5px;
+}
+
+/* Menü und Footer in der Sidebar */
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-menu li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  cursor: pointer;
+  border-bottom: 1px solid #333;
+}
+
+.sidebar-menu li:hover {
+  background-color: #2a2a40;
+}
+
+.sidebar-menu li.active {
+  background-color: #0078d4;
+  color: #fff;
+  font-weight: bold;
+}
+
+.add-tasks-btn {
+  /* Falls du den Container noch weiter anpassen möchtest */
+  margin: 0;
+  padding: 0;
+}
+
+.add-tasks-button {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px 20px;
+  cursor: pointer;
+  border-bottom: 1px solid #333;
+  color: #fff;
+  transition: background-color 0.2s ease;
+}
+
+.add-tasks-button:hover {
+  background-color: #2a2a40;
+}
+
+.sidebar-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background-color: #2a2a40;
+  border-top: 1px solid #333;
+  padding: 10px 0;
+}
+
+.projects-toggle {
+  width: 100%;
+  background: none;
+  color: #fff;
+  border: none;
+  outline: none;
+  padding: 15px 20px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 1rem;
+  border-bottom: 1px solid #333;
+}
+
+.projects-toggle:hover {
+  background-color: #353547;
+}
+
+.project-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background-color: #2a2a40;
+}
+
+.project-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  border-bottom: 1px solid #333;
+  cursor: pointer;
+  color: #fff;
+}
+
+.project-list li:hover {
+  background-color: #353547;
+}
+
+.project-list li.active {
+  background-color: #0078d4;
+  color: #fff;
+  font-weight: bold;
+}
+
+.delete-project-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-left: 10px;
+  transition: color 0.2s;
+}
+
+.delete-project-btn:hover {
+  color: #dc3545;
+}
+
+
+.project-list li.create-project {
+  text-transform: uppercase;
+  font-weight: bold;
+  color: #a9a9a9;
+}
+
+.project-list li.create-project:hover {
+  color: #fff;
+}
+
+/* Resizer für Sidebar */
+.sidebar-resizer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 5px;
+  height: 100%;
+  cursor: col-resize;
+  background: #ccc;
+  z-index: 10;
+}
+
+/* (Eventuell noch vorhandene Collapse-Button-Regel in der Sidebar) */
+.sidebar-container .collapse-btn {
+  background-color: #0078d4;
+  color: #fff;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 0.9rem;
+}
+
+/* Main Content (mittlere Spalte): Header + Chat */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Globaler Header im Main Content */
+.dashboard-header {
+  background-color: #ffffff;
+  color: #333;
+  padding: 10px 20px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-left,
+.header-center,
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.dashboard-title {
+  margin: 0;
+  font-size: 1.5rem;
+  margin-left: 15px;
+}
+
+/* Innerer Container für Chat (nimmt den restlichen Platz ein) */
+.chat-container {
+  flex: 1;
+  overflow: auto;
+  background-color: #ffffff;
+  position: relative;
+}
+
+/* Chat Area */
+.chat-area {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  position: relative;
+}
+
+.chat-header {
+  padding: 15px 20px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  font-size: 1.2rem;
+  color: #343a40;
+  text-align: center;
+}
+
+.chat-greeting {
+  margin: 0;
+  font-weight: 500;
+}
+
+.chat-window {
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: visible;
+  background-color: #ffffff;
+  /* Der Scrollbalken belegt die volle Breite */
+}
+
+.chat-content {
+  max-width: 830px;
+  width: 90%;
+  margin: 0 auto;
+  padding: 20px;
+  padding-bottom: 200px;
+  /* damit nichts hinter der Input-Maske verschwindet */
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.message {
+  max-width: 70%;
+  padding: 12px 16px;
+  border-radius: 15px;
+  font-size: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: visible;
+}
+
+.message.sent {
+  background-color: #007bff;
+  color: #ffffff;
+  align-self: flex-end;
+  margin-left: auto;
+  /* Dadurch wird die Box an das Ende (rechts) geschoben */
+}
+
+.message.received {
+  background-color: #e9ecef;
+  color: #495057;
+  align-self: flex-start;
+  /* Diese Box bleibt links */
+}
+
+
+/* File Preview */
+.file-preview-container {
+  display: flex;
+  gap: 10px;
+  padding: 10px 20px;
+  background-color: #ffffff;
+  overflow-x: auto;
+}
+
+.file-preview-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 8px;
+  position: relative;
+}
+
+.file-preview-image {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.file-preview-icon {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e9ecef;
+  border-radius: 5px;
+}
+
+.file-icon {
+  color: #6c757d;
+  font-size: 1.5rem;
+}
+
+.file-name {
+  font-size: 0.75rem;
+  color: #6c757d;
+  text-align: center;
+  margin-top: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 60px;
+}
+
+.remove-file-button {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: none;
+  border: none;
+  color: #dc3545;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.remove-file-button:hover {
+  color: #c82333;
+}
+
+.input-background {
+  position: absolute;
+  bottom: 0;
+  left: 5%;
+  width: 90%;
+  height: 50px;
+  /* Bis etwa zur Mitte der Input Area, anpassbar */
+  background-color: #ffffff;
+  z-index: 999;
+  /* Hinter der Input Area, vor dem Chat-Content */
+}
+
+.footer-text {
+  position: absolute;
+  bottom: 5px;
+  /* Abstand vom unteren Rand, anpassbar */
+  left: 50%;
+  width: 90%;
+  transform: translateX(-50%);
+  font-size: 0.8rem;
+  color: #666;
+  z-index: 1001;
+  /* Höher als die Input Area */
+  text-align: center;
+}
+
+
+/* Input Area (Chat-Eingabe) */
+.input-area {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 830px;
+  background-color: #ffffff;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 20px;
+  padding: 15px;
+  z-index: 1000;
+  transition: box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-area:focus-within {
+  box-shadow: 0 -6px 16px rgba(0, 0, 0, 0.25);
+}
+
+.input-container {
+  width: 100%;
+}
+
+.message-input {
+  width: 100%;
+  border: none;
+  background: none;
+  padding: 5px;
+  font-size: 1rem;
+  color: #343a40;
+  outline: none;
+  resize: none;
+  overflow-y: auto;
+  min-height: 24px;
+  /* ca. 1 Zeile */
+  max-height: 240px;
+  /* ca. 10 Zeilen */
+  line-height: 1.5;
+}
+
+.message-input:empty {
+  min-height: 24px;
+}
+
+.message-container {
+  margin-bottom: 15px;
+  /* Keine zusätzlichen Padding oder Border, um die bestehende .message nicht zu beeinflussen */
+}
+
+.timestamp {
+  font-size: 0.75rem;
+  color: #888;
+  margin-top: 4px;
+  /* Stelle sicher, dass es als Block-Element unter der Nachricht angezeigt wird */
+  display: block;
+}
+
+.timestamp-left {
+  text-align: left;
+}
+
+.timestamp-right {
+  text-align: right;
+}
+
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.left-controls,
+.right-controls {
+  display: flex;
+  align-items: center;
+}
+
+.file-upload-label {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  background-color: #e9ecef;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.file-upload-label:hover {
+  background-color: #ced4da;
+}
+
+.file-upload-label .FiPaperclip {
+  color: #495057;
+}
+
+.file-input {
+  display: none;
+}
+
+.global-input-hint {
+  font-size: 0.8rem;
+  color: #7d868d;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.send-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  color: #007bff;
+  transition: color 0.2s;
+}
+
+.send-button:hover {
+  color: #0056b3;
+}
+
+.mic-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  color: #007bff;
+  font-size: 1.5rem;
+  transition: color 0.2s;
+}
+
+.mic-button.recording {
+  color: #dc3545;
+}
+
+.mic-button:hover {
+  color: #0056b3;
+}
+
+/* Preview Container (rechte Spalte) */
+.preview-container {
+  position: relative;
+  background-color: #f8f8f8;
+  border-left: 1px solid #ddd;
+  transition: width 0.3s;
+  overflow: hidden;
+  height: 100vh;
+  /* Kommt komplett bis oben */
+}
+
+/* Preview Content */
+.preview-content {
+  height: 100%;
+  overflow: auto;
+  padding: 10px;
+}
+
+/* Resizer für Preview */
+.preview-resizer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  cursor: col-resize;
+  background: #ccc;
+  z-index: 10;
+  transition: transform 0.1s ease-out;
+}
+
+/* LaTeX Preview Styles */
+.latex-preview {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  /* Entferne ggf. doppeltes Padding, falls vorhanden */
+  /* padding: 15px; */
+  background-color: #f4f4f4;
+  border-bottom: 1px solid #ddd;
+  font-size: 1.2rem;
+}
+
+/* Header der LaTeX Preview */
+.preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  background-color: #f4f4f4;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Collapse-Button in der LaTeX Preview – soll (bei geöffnetem Fenster) innerhalb des Preview-Headers erscheinen */
+.preview-collapse-btn {
+  background: none;
+  border: none;
+  color: #333;
+  /* Da die Sidebar-Buttons weiß bleiben – hier anpassen, falls nötig */
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 5px;
+  transition: transform 0.3s;
+}
+
+.preview-collapse-btn:hover {
+  transform: scale(1.1);
+}
+
+/* Zusätzlich existieren bereits .preview-toggle-btn, falls benötigt */
+.preview-header-btns {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Button zum Aktualisieren der LaTeX Vorschau */
+.refresh-btn {
+  background: none;
+  border: none;
+  color: #0078d4;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+/* LaTeX Content */
+.latex-content {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+}
+
+/* Modal Styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  width: 300px;
+}
+
+.modal-actions button {
+  margin: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modal-actions button:first-child {
+  background-color: #ccc;
+}
+
+.modal-actions button:last-child {
+  background-color: #0078d4;
+  color: white;
+}
+
+/* Attachments */
+.attachments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.attachment-image {
+  width: 100px;
+  height: auto;
+  border-radius: 10px;
+  object-fit: cover;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.attachment-pdf-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background-color: #e9ecef;
+  border-radius: 5px;
+  text-decoration: none;
+  color: #333;
+  position: relative;
+}
+
+.attachment-csv-icon {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  text-decoration: none;
+  color: #333;
+}
+
+.csv-label {
+  margin-right: 4px;
+}
+
+
+.pdf-label {
+  font-size: 0.8rem;
+}
+
+.attachment-pdf-icon:hover {
+  background-color: #d0dce0;
+}
+
+.download-icon {
+  position: absolute;
+  opacity: 0;
+  transition: opacity 0.2s;
+  font-size: 1.2rem;
+  bottom: 5px;
+  right: 5px;
+}
+
+.attachment-pdf-icon:hover .download-icon {
+  opacity: 1;
+  color: #0078d4;
+}
+
+.attachment-audio {
+  width: 100%;
+  max-width: 300px;
+  /* Anpassen je nach gewünschter Größe */
+  margin: 8px 0;
+  outline: none;
+}
+
+.attachment-file {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background-color: #e9ecef;
+  border-radius: 5px;
+}
+
+.pdf-viewer-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+}
+
+.pdf-toolbar {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  padding: 5px;
+  display: flex;
+  gap: 5px;
+  z-index: 100;
+}
+
+.toolbar-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  font-size: 1.2em;
+  color: #333;
+  transition: color 0.2s;
+}
+
+.toolbar-btn:hover {
+  color: #007bff;
+}
+
+.pdf-viewer {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+
+
+
+.pdf-controls,
+.pdf-navigation {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.pdf-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #0078d4;
+  font-size: 1.5rem;
+  transition: color 0.2s;
+}
+
+.pdf-btn:hover {
+  color: #0056b3;
+}
+
+.pdf-page-info {
+  font-size: 0.9rem;
+  color: #333;
+  display: flex;
+  align-items: center;
+}
+
+.pdf-document {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+  padding: 8px;
+}
+
+
+/* Spinner für Ladezustände */
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-top-color: rgba(3, 47, 178, 0.8);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+
+  /* Auf Mobile nehmen Sidebar und Preview den ganzen Bildschirm ein.
+     Damit Main Content nicht angezeigt wird, übernimmt der JS-Code die Anzeige via inline style */
+  .sidebar-container,
+  .preview-container {
+    transition: width 0.2s ease-out;
+    /* Keine Animation auf Mobile */
+  }
+
+  /* Stelle sicher, dass die Toggle-Buttons sichtbar bleiben */
+  .header-expand-btn,
+  .header-preview-expand-btn {
+    display: inline-block;
+  }
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
+.modal-content {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+}
+
+.modal-image {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.modal-close {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: #fff;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0 6px;
+}
+
+
+.status-badge {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.knowledge-settings-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  margin-left: 8px;
+  color: #007bff;
+  display: flex;
+  align-items: center;
+}
+
+.knowledge-settings-btn:hover {
+  color: #0056b3;
+}
+
+
+.streaming-update {
+  font-style: italic;
+  color: #555;
+  margin: 10px 0;
+  position: relative;
+  overflow: hidden;
+  /* Optional: Rahmen oder Hintergrund für mehr Kontrast */
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}
+
+.streaming-text {
+  position: relative;
+  padding: 2px 5px;
+  /* Hintergrundgradient, der animiert wird */
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.6) 50%, transparent 100%);
+  background-size: 200% auto;
+  animation: shimmer 2s linear infinite;
+  display: inline-block;
+}
+
+/* Animation: shimmer von links nach rechts */
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+
+  100% {
+    background-position: 200% center;
+  }
+}
+
+
+
+/* Container unter der Nachricht – kein absolutes Positionieren mehr */
+.tool-call-bubbles {
+  position: relative;
+  /* im Flow bleiben */
+  margin-top: 6px;
+  max-width: 80%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Header */
+.tool-call-header {
+  font-size: 0.8em;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+/* Jede Bubble */
+.tool-call-bubble {
+  display: flex;
+  align-items: flex-start;
+  background-color: #f0f4ff;
+  border-radius: 8px;
+  padding: 6px 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  max-height: calc(1.2em * 2 + 8px);
+  /* 2 Zeilen + Padding */
+  overflow: hidden;
+}
+
+/* Icon links */
+.tool-call-icon {
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
+/* Textteil auf 2 Zeilen clampen */
+.tool-call-text {
+  font-family: "Courier New", monospace;
+  font-size: 0.9em;
+  line-height: 1.2em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.tool-call-bubble-container {
+  margin-top: 8px;
+  max-width: 80%;
+  background: #f0f4ff;
+  border-left: 3px solid #007bff;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-family: monospace;
+}
+
+.tool-call-header {
+  font-size: 0.85em;
+  font-weight: bold;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.tool-call-content {
+  max-height: calc(1.2em * 3);
+  /* 3 Zeilen */
+  line-height: 1.2em;
+  overflow: hidden;
+  white-space: pre-wrap;
+  /* Scrollbar verstecken */
+  scrollbar-width: none;
+}
+
+.tool-call-content::-webkit-scrollbar {
+  display: none;
+}
+
+
+.mode-selector {
+  position: relative;
+  margin-left: 8px;
+}
+
+.mode-selector-button {
+  background: none;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.mode-selector-button:hover {
+  background-color: #f0f0f0;
+  border-color: #bbb;
+}
+
+.chevron {
+  border: solid #666;
+  border-width: 0 1.5px 1.5px 0;
+  display: inline-block;
+  padding: 3px;
+  transform: rotate(45deg);
+  transition: transform 0.2s;
+}
+
+.chevron.up {
+  transform: rotate(-135deg);
+}
+
+.mode-selector-menu {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: max-content;
+  min-width: 140px;
+  z-index: 1000;
+}
+
+.mode-selector-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.mode-selector-item:hover {
+  background-color: #f8f9fa;
+}
+
+.mode-selector-item.active {
+  font-weight: bold;
+  background-color: #e9ecef;
+}
+
+.mode-info-text {
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  color: #7d868d;
+  border-top: 1px solid #eee;
+}
+
+
+.settings-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.settings-item:hover {
+  background-color: #f8f9fa;
+}
+
+.settings-info-text {
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  color: #7d868d;
+  border-top: 1px solid #eee;
+}
+
+
+.web-search-toggle {
+  padding: 8px 12px;
+}
+
+.web-search-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 14px;
+  gap: 8px;
+}
+
+.web-search-checkbox {
+  display: none;
+}
+
+.web-search-slider {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background-color: #ccc;
+  border-radius: 24px;
+  transition: 0.3s;
+}
+
+.web-search-slider:before {
+  position: absolute;
+  content: "";
+  width: 20px;
+  height: 20px;
+  left: 2px;
+  top: 2px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+.web-search-checkbox:checked+.web-search-slider {
+  background-color: #007bff;
+}
+
+.web-search-checkbox:checked+.web-search-slider:before {
+  transform: translateX(20px);
+}
+
+
+/* Chat-Link Styling */
+.chat-link {
+  color: #007bff !important;
+  text-decoration: none;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background-color: rgba(0, 123, 255, 0.1);
+  border: 1px solid rgba(0, 123, 255, 0.2);
+  transition: all 0.2s ease;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.chat-link:hover {
+  background-color: rgba(0, 123, 255, 0.2);
+  border-color: rgba(0, 123, 255, 0.4);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+}
+
+.chat-link:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 123, 255, 0.2);
+}
+
+/* Icon für externe Links */
+.chat-link::after {
+  content: "🔗";
+  font-size: 0.8em;
+  opacity: 0.7;
+}
+
+/* Alternative mit Unicode-Pfeil */
+.chat-link.external::after {
+  content: "↗";
+  font-size: 0.9em;
+  opacity: 0.8;
+}
+
+/* Für dunkle Themes */
+.dark-theme .chat-link {
+  color: #4dabf7 !important;
+  background-color: rgba(77, 171, 247, 0.15);
+  border-color: rgba(77, 171, 247, 0.3);
+}
+
+.dark-theme .chat-link:hover {
+  background-color: rgba(77, 171, 247, 0.25);
+  border-color: rgba(77, 171, 247, 0.5);
+}
+
+/* Responsive Anpassungen */
+@media (max-width: 768px) {
+  .chat-link {
+    padding: 1px 4px;
+    font-size: 0.9em;
+  }
+}
+
+.web-search-indicator {
+  position: relative;
+  margin-left: 10px;
+  font-size: 20px;
+  color: #007bff;
+  cursor: default;
+}
+
+.web-search-indicator::after {
+  content: "web search zugriff freigegeben";
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 3px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+  z-index: 100;
+}
+
+.web-search-indicator::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: #333 transparent transparent transparent;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+  z-index: 100;
+}
+
+.web-search-indicator:hover::after,
+.web-search-indicator:hover::before {
+  opacity: 1;
+  visibility: visible;
+}
