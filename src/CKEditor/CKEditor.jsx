@@ -555,7 +555,7 @@ const CKEditorTest = forwardRef((props, ref) => {
           zoomReset,
           sourcecode: () => {
             const sourceCodeUrl =
-              "https://github.com/Daavid2101/digser-ai-server-frontend/";
+              "https://github.com/Daavid2101/digser-ai-server-frontend-2/";
             window.open(sourceCodeUrl, "_blank");
           },
         },

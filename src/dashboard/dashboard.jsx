@@ -20,8 +20,11 @@ const MAX_FILES = 9;
 
 const Dashboard = () => {
   const API_URL = dashboardService.BASE_API_URL;
-  const { handleLoginSuccess } = useAuth();
-  const { username } = useAuth();
+  const { isLoggedIn, userId, username } = useAuth();
+  useEffect(() => {
+    console.log("User ID im Dashboard:", userId);
+    // Weitere Logik hier, falls nötig
+  }, [userId]);
   const [editorReloadTrigger, setEditorReloadTrigger] = useState(0);
   const pageEditorRef = useRef(null);
   const [isResizing, setIsResizing] = useState(false);
@@ -42,7 +45,8 @@ const Dashboard = () => {
   const { messages, setMessages } = useMessages(
     API_URL,
     selectedProject,
-    selectedTask
+    selectedTask,
+    userId
   );
 
   const [assistantsStatus, setAssistantsStatus] = useState({});
@@ -92,6 +96,7 @@ const Dashboard = () => {
       project_id: selectedProject.project_id,
       template: projectTemplate.template_name,
       child_checks: childChecks,
+      user_id: userId,
     };
 
     try {
@@ -278,6 +283,7 @@ const Dashboard = () => {
     const currentDate = new Date().toISOString().split("T")[0];
     const projectData = {
       project_name: projectFormData.project_name,
+      user_id: userId,
       user_name: username,
       template: selectedTemplate,
       stammdaten: {
@@ -490,6 +496,7 @@ const Dashboard = () => {
         <div className="chat-container">
           <ChatArea
             username={username}
+            userId={userId}
             selectedProject={selectedProject}
             selectedTask={selectedTask}
             messages={messages}
@@ -507,7 +514,7 @@ const Dashboard = () => {
               refreshStatus();
               fetchPdf();
               fetch(
-                `${API_URL}/chat/get_messages?project_id=${selectedProject.project_id}&task=${selectedTask}`
+                `${API_URL}/chat/get_messages?project_id=${selectedProject.project_id}&task=${selectedTask}&user_id=${userId}`
               )
                 .then((res) => res.json())
                 .then((data) => {

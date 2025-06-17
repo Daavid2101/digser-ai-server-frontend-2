@@ -8,6 +8,8 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   // null = loading, true = eingeloggt, false = ausgeloggt
   const [isLoggedIn, setIsLoggedIn] = useState(null);
+  const [userId, setUserId] = useState(null);
+  const [username, setUsername] = useState(null);
 
   const login = async (username, password) => {
     const res = await fetch(`${BASE_API_URL}/auth/login_user`, {
@@ -20,7 +22,10 @@ export const AuthProvider = ({ children }) => {
       const err = await res.json();
       throw new Error(err.error || "Login fehlgeschlagen");
     }
+    const data = await res.json();
     setIsLoggedIn(true);
+    setUserId(data.user_id);
+    setUsername(data.username);
   };
 
   const logout = async () => {
@@ -44,7 +49,16 @@ export const AuthProvider = ({ children }) => {
             "X-CSRF-TOKEN": csrf || "",
           },
         });
-        setIsLoggedIn(res.ok);
+        if (res.ok) {
+          const data = await res.json();
+          setIsLoggedIn(true);
+          setUserId(data.user_id);
+          setUsername(data.username);
+        } else {
+          setIsLoggedIn(false);
+          setUserId(null);
+          setUsername(null);
+        }
       } catch {
         setIsLoggedIn(false);
       }
@@ -58,7 +72,9 @@ export const AuthProvider = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+    <AuthContext.Provider
+      value={{ isLoggedIn, login, logout, userId, username }}
+    >
       {children}
     </AuthContext.Provider>
   );

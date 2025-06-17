@@ -1,14 +1,14 @@
 // useMessages.js
 import { useState, useEffect } from "react";
 
-const useMessages = (API_URL, selectedProject, selectedTask) => {
+const useMessages = (API_URL, selectedProject, selectedTask, userId) => {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
     if (!selectedProject) return;
     const { project_id } = selectedProject;
     fetch(
-      `${API_URL}/chat/get_messages?project_id=${project_id}&task=${selectedTask}`
+      `${API_URL}/chat/get_messages?project_id=${project_id}&task=${selectedTask}&user_id=${userId}`
     )
       .then((res) => res.json())
       .then((data) => {

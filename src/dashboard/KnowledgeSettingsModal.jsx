@@ -13,6 +13,7 @@ const KnowledgeSettingsModal = ({
   isOpen,
   onClose,
   API_URL,
+  userId,
   projectId,
   knowledgeOptions,
   onSave,
@@ -90,6 +91,7 @@ const KnowledgeSettingsModal = ({
       const params = new URLSearchParams({
         assistant: contextAssistant === "all" ? "" : contextAssistant,
         project_id: contextProject === "current" ? projectId : "",
+        user_id: userId,
       });
       const res = await fetch(`${API_URL}/context/get?${params}`);
       const data = await res.json();
@@ -133,6 +135,7 @@ const KnowledgeSettingsModal = ({
           "project_id",
           contextProject === "current" ? projectId : ""
         );
+        formData.append("user_id", userId);
 
         const res = await fetch(`${API_URL}/context/process`, {
           method: "POST",

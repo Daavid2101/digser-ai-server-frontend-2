@@ -28,6 +28,7 @@ const formatTimestamp = (timestamp) => {
 
 const ChatArea = ({
   username,
+  userId,
   selectedProject,
   selectedTask,
   messages,
@@ -181,7 +182,7 @@ const ChatArea = ({
 
     try {
       const encodedFiles = await Promise.all(filePromises);
-      const userId = localStorage.getItem("user_id");
+      // const userId = localStorage.getItem("user_id");
 
       const res = await fetch(`${API_URL}/chat/trigger_send_message`, {
         method: "POST",
@@ -684,6 +685,7 @@ const ChatArea = ({
           isOpen={isModalOpen_knowledge}
           onClose={() => setIsModalOpen_knowledge(false)}
           API_URL={API_URL}
+          userId={userId}
           projectId={selectedProject.project_id}
           knowledgeOptions={
             selectedProject && selectedProject.tasks
