@@ -15,6 +15,7 @@ import InitializationForm from "./InitializationForm";
 import AddTasksModal from "./AddTaskModal";
 import PlausibilityCheckPage from "./PlausibilityCheckPage";
 import CKEditorTest from "../CKEditor/CKEditor";
+import CanvasComponent from "../Canvas/Canvas";
 
 const MAX_FILES = 9;
 
@@ -23,11 +24,11 @@ const Dashboard = () => {
   const { isLoggedIn, userId, username } = useAuth();
   useEffect(() => {
     console.log("User ID im Dashboard:", userId);
-    // Weitere Logik hier, falls nötig
   }, [userId]);
   const [editorReloadTrigger, setEditorReloadTrigger] = useState(0);
   const pageEditorRef = useRef(null);
   const [isResizing, setIsResizing] = useState(false);
+  const [showCanvas, setShowCanvas] = useState(false);
 
   const [selectedTask, setSelectedTask] = useState(null);
 
@@ -353,22 +354,18 @@ const Dashboard = () => {
 
   const handlePreviewResizeMouseDown = (e) => {
     e.preventDefault();
-    setIsResizing(true); // Editor einfrieren
-
+    setIsResizing(true);
     const startX = e.clientX;
     const startWidth = previewWidth;
-
     const onMouseMove = (e) => {
       const newWidth = startWidth + (startX - e.clientX);
       setPreviewWidth(newWidth > 0 ? newWidth : 0);
     };
-
     const onMouseUp = () => {
-      setIsResizing(false); // Editor wieder aktivieren
+      setIsResizing(false);
       document.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseup", onMouseUp);
     };
-
     document.addEventListener("mousemove", onMouseMove);
     document.addEventListener("mouseup", onMouseUp);
   };
@@ -428,7 +425,7 @@ const Dashboard = () => {
       >
         {!isSidebarCollapsed && (
           <div
-            className="sidebar-container"
+            className="sidebar-content"
             style={{
               width: isMobile
                 ? isSidebarCollapsed
@@ -439,37 +436,34 @@ const Dashboard = () => {
                 : `${sidebarWidth}px`,
             }}
           >
-            {!isSidebarCollapsed && (
-              <div className="sidebar-content">
-                <Sidebar
-                  projectTasks={projectTasks}
-                  selectedTask={selectedTask}
-                  setSelectedTask={handleTaskSelect}
-                  projects={projects}
-                  selectedProject={selectedProject}
-                  assistantsStatus={assistantsStatus}
-                  setAssistantsStatus={setAssistantsStatus}
-                  showProjects={showProjects}
-                  setShowProjects={setShowProjects}
-                  setSelectedProject={setSelectedProject}
-                  setShowProjectModal={setShowProjectModal}
-                  setShowAddTasksModal={setShowAddTasksModal}
-                  toggleSidebar={toggleSidebar}
-                  deleteProject={deleteProject}
-                  updateStatus={updateStatus}
-                  refreshStatus={refreshStatus}
-                  API_URL={API_URL}
-                />
-                <AddTasksModal
-                  show={showAddTasksModal}
-                  onClose={() => setShowAddTasksModal(false)}
-                  projectTemplate={projectTemplate}
-                  handleAddTasks={handleAddTasks}
-                  currentProjectTasks={projectTasks}
-                  loading={loading}
-                />
-              </div>
-            )}
+            <Sidebar
+              projectTasks={projectTasks}
+              selectedTask={selectedTask}
+              setSelectedTask={handleTaskSelect}
+              projects={projects}
+              selectedProject={selectedProject}
+              assistantsStatus={assistantsStatus}
+              setAssistantsStatus={setAssistantsStatus}
+              showProjects={showProjects}
+              setShowProjects={setShowProjects}
+              set
+              Ascendants={setSelectedProject}
+              setShowProjectModal={setShowProjectModal}
+              setShowAddTasksModal={setShowAddTasksModal}
+              toggleSidebar={toggleSidebar}
+              deleteProject={deleteProject}
+              updateStatus={updateStatus}
+              refreshStatus={refreshStatus}
+              API_URL={API_URL}
+            />
+            <AddTasksModal
+              show={showAddTasksModal}
+              onClose={() => setShowAddTasksModal(false)}
+              projectTemplate={projectTemplate}
+              handleAddTasks={handleAddTasks}
+              currentProjectTasks={projectTasks}
+              loading={loading}
+            />
           </div>
         )}
       </div>
@@ -535,12 +529,27 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div style={{ position: "relative", width: `${previewWidth}px` }}>
-        <CKEditorTest
-          ref={pageEditorRef}
-          API_URL={API_URL}
-          selectedProject={selectedProject}
-        />
+      <div className="preview-container" style={{ width: `${previewWidth}px` }}>
+        <button
+          className="toggle-button"
+          onClick={() => setShowCanvas(!showCanvas)}
+        >
+          {showCanvas ? "Show Editor" : "Show Canvas"}
+        </button>
+        <div className="preview-content">
+          {showCanvas ? (
+            <CanvasComponent
+              API_URL={API_URL}
+              selectedProject={selectedProject}
+            />
+          ) : (
+            <CKEditorTest
+              ref={pageEditorRef}
+              API_URL={API_URL}
+              selectedProject={selectedProject}
+            />
+          )}
+        </div>
         {isResizing && (
           <div
             style={{
@@ -553,7 +562,7 @@ const Dashboard = () => {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              pointerEvents: "none", // verhindert Interaktion mit dem Editor
+              pointerEvents: "none",
             }}
           >
             Resizing Editor…
