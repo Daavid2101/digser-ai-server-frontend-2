@@ -198,14 +198,14 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (showProjectModal) {
-      fetch(`${API_URL}/files/get_templates`)
+      fetch(`${API_URL}/files/get_templates?user_id=${userId}`)
         .then((res) => res.json())
         .then((data) => {
           setTemplates(data.templates || []);
         })
         .catch((err) => console.error("Fehler beim Laden der Templates:", err));
     }
-  }, [showProjectModal, API_URL]);
+  }, [showProjectModal, API_URL, userId]);
 
   const updateStatus = async (task, newStatus) => {
     const project_id = selectedProject.project_id;
