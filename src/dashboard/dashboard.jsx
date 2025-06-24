@@ -27,6 +27,7 @@ const Dashboard = () => {
   }, [userId]);
   const [editorReloadTrigger, setEditorReloadTrigger] = useState(0);
   const pageEditorRef = useRef(null);
+  const chatAreaRef = useRef(null);
   const [isResizing, setIsResizing] = useState(false);
   const [showCanvas, setShowCanvas] = useState(false);
 
@@ -82,6 +83,12 @@ const Dashboard = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   const [taskRequestedData, setTaskRequestedData] = useState(null);
+
+  const handleCanvasExport = (data) => {
+    if (chatAreaRef.current) {
+      chatAreaRef.current.onSend(null, [], data);
+    }
+  };
 
   const handleAddTasks = async (childChecks) => {
     setLoading(true);
@@ -446,8 +453,7 @@ const Dashboard = () => {
               setAssistantsStatus={setAssistantsStatus}
               showProjects={showProjects}
               setShowProjects={setShowProjects}
-              set
-              Ascendants={setSelectedProject}
+              setSelectedProject={setSelectedProject}
               setShowProjectModal={setShowProjectModal}
               setShowAddTasksModal={setShowAddTasksModal}
               toggleSidebar={toggleSidebar}
@@ -489,6 +495,7 @@ const Dashboard = () => {
 
         <div className="chat-container">
           <ChatArea
+            ref={chatAreaRef}
             username={username}
             userId={userId}
             selectedProject={selectedProject}
@@ -541,6 +548,7 @@ const Dashboard = () => {
             <CanvasComponent
               API_URL={API_URL}
               selectedProject={selectedProject}
+              onExport={handleCanvasExport}
             />
           ) : (
             <CKEditorTest

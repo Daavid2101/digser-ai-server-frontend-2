@@ -150,6 +150,34 @@ class MyExtrasMenuPlugin {
       },
       position: "before:edit",
     });
+
+    ui.componentFactory.add("menuBar:export", (locale) => {
+      const view = new MenuBarMenuListItemButtonView(locale);
+      view.set({ label: "Als PDF exportieren", tooltip: true });
+      view.on("execute", () => {
+        const callbacks = getCallbacks();
+        if (typeof callbacks.export === "function") {
+          callbacks.export();
+        } else {
+          console.warn("Callback 'export' nicht gefunden.", callbacks);
+        }
+      });
+      return view;
+    });
+
+    ui.extendMenuBar({
+      menu: {
+        menuId: "exportMenu",
+        label: "Export",
+        groups: [
+          {
+            groupId: "exportGroup",
+            items: ["menuBar:export"],
+          },
+        ],
+      },
+      position: "after:help",
+    });
   }
 }
 
@@ -557,6 +585,10 @@ const CKEditorTest = forwardRef((props, ref) => {
             const sourceCodeUrl =
               "https://github.com/Daavid2101/digser-ai-server-frontend-2/";
             window.open(sourceCodeUrl, "_blank");
+          },
+          export: () => {
+            const id = projectRef.current.project_id;
+            window.open(`${props.API_URL}/export/pdf/${id}`, "_blank");
           },
         },
         fontFamily: {

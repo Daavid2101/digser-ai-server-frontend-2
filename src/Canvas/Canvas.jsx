@@ -7,7 +7,6 @@ import React, {
 } from "react";
 import { AlertCircle, RefreshCw, Code, Play, ChevronDown } from "lucide-react";
 
-// Error Boundary Component
 class CodeExecutionErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -53,10 +52,8 @@ class CodeExecutionErrorBoundary extends React.Component {
   }
 }
 
-// Export Context
 const ExportContext = createContext({ setExportData: () => {} });
 
-// Dynamic Component Wrapper
 const DynamicComponentWrapper = ({ code, onError, onExport }) => {
   const [Component, setComponent] = useState(null);
   const [renderError, setRenderError] = useState(null);
@@ -80,6 +77,7 @@ const DynamicComponentWrapper = ({ code, onError, onExport }) => {
         "useEffect",
         "useRef",
         "useCallback",
+        "code",
         `
         try {
           ${code}
@@ -125,7 +123,8 @@ const DynamicComponentWrapper = ({ code, onError, onExport }) => {
         useState,
         useEffect,
         useRef,
-        useCallback
+        useCallback,
+        code
       );
 
       setComponent(() => ExecutableComponent);
@@ -165,7 +164,6 @@ const DynamicComponentWrapper = ({ code, onError, onExport }) => {
   return React.createElement(Component, { setExportData, onExport });
 };
 
-// Canvas Dropdown Component
 const CanvasDropdown = ({ canvases, selectedCanvasIndex, onCanvasSelect }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -220,8 +218,7 @@ const CanvasDropdown = ({ canvases, selectedCanvasIndex, onCanvasSelect }) => {
   );
 };
 
-// Main Canvas Component
-const CanvasComponent = ({ API_URL, selectedProject }) => {
+const CanvasComponent = ({ API_URL, selectedProject, onExport }) => {
   const [canvases, setCanvases] = useState([]);
   const [selectedCanvasIndex, setSelectedCanvasIndex] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -230,40 +227,30 @@ const CanvasComponent = ({ API_URL, selectedProject }) => {
   const [exportData, setExportData] = useState(null);
   const abortControllerRef = useRef(null);
   const exportDataRef = useRef(null);
+  const [noCanvas, setNoCanvas] = useState(false);
 
-  // Stabilize setExportData with useCallback
   const stableSetExportData = useCallback((data) => {
     setExportData(data);
   }, []);
 
-  const handleExport = useCallback(async () => {
+  const handleExport = useCallback(() => {
     if (!exportDataRef.current) {
       alert("No data available to export");
       return;
     }
-    try {
-      const response = await fetch(`${API_URL}/canvas/export_data`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(exportDataRef.current),
-      });
-      if (!response.ok) {
-        throw new Error("Failed to export data");
-      }
-      alert("Data exported successfully");
-    } catch (err) {
-      console.error("Export failed:", err);
-      alert("Failed to export data");
+    if (onExport) {
+      onExport(exportDataRef.current);
     }
-  }, [API_URL]);
+  }, [onExport]);
 
   const fetchCanvasCode = useCallback(async () => {
     if (!API_URL || !selectedProject?.project_id) {
       setError("Missing API_URL or selectedProject");
       return;
     }
+    setError(null);
+    setNoCanvas(false);
+    setLoading(true);
 
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
@@ -285,16 +272,20 @@ const CanvasComponent = ({ API_URL, selectedProject }) => {
         }
       );
 
+      if (response.status === 404) {
+        setNoCanvas(true);
+        setCanvases([]);
+        return;
+      }
+
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
 
       const data = await response.json();
 
-      // Handle the new response structure
       let canvasData = [];
       if (data.code && Array.isArray(data.code)) {
-        // Find the project in the response
         const projectData = data.code.find(
           (project) => project.project_id === selectedProject.project_id
         );
@@ -310,13 +301,10 @@ const CanvasComponent = ({ API_URL, selectedProject }) => {
       }
 
       setCanvases(canvasData);
-      setSelectedCanvasIndex(0); // Reset to first canvas
+      setSelectedCanvasIndex(0);
       setLastFetch(new Date().toISOString());
     } catch (err) {
-      if (err.name === "AbortError") {
-        return;
-      }
-
+      if (err.name === "AbortError") return;
       console.error("Failed to fetch canvas code:", err);
       setError(err.message);
       setCanvases([]);
@@ -347,9 +335,35 @@ const CanvasComponent = ({ API_URL, selectedProject }) => {
     setSelectedCanvasIndex(index);
   };
 
-  // Get current canvas code
   const currentCanvas = canvases[selectedCanvasIndex];
   const currentCode = currentCanvas?.code || "";
+
+  if (noCanvas) {
+    return (
+      <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+        <div className="flex items-center mb-4">
+          <Code className="text-gray-500 mr-2" size={20} />
+          <h3 className="text-gray-700 font-semibold">
+            Keine Canvas vorhanden
+          </h3>
+        </div>
+        <p className="text-gray-600 mb-5">
+          Für dieses Projekt wurde noch kein Canvas erstellt. Sie können ein
+          Canvas nutzen, um beliebige Datenanalysen durchzuführen. Wenn Sie eine
+          Analyse erstellen möchten, beschreiben Sie der KI / dem Assistant,
+          welche Daten analysiert werden sollen und welche freien Parameter
+          benötigt werden.
+        </p>
+        <button
+          onClick={handleRetry}
+          className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors flex items-center"
+        >
+          <RefreshCw className="mr-2" size={16} />
+          Aktualisieren
+        </button>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
