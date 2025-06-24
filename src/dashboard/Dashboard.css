@@ -1074,31 +1074,37 @@ body {
 /* Jede Bubble */
 .tool-call-bubble {
   display: flex;
-  align-items: flex-start;
-  background-color: #f0f4ff;
-  border-radius: 8px;
-  padding: 6px 10px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  max-height: calc(1.2em * 2 + 8px);
-  /* 2 Zeilen + Padding */
-  overflow: hidden;
+  align-items: center;
+  gap: 5px;
+  background: rgba(0, 123, 255, 0.1);
+  border: 1px solid rgba(0, 123, 255, 0.3);
+  border-radius: 12px;
+  padding: 4px 8px;
+  margin-top: 5px;
+  font-size: 0.8em;
+  width: 100%;
+  /* Setzt die Breite auf 100% des Containers */
+  max-width: none;
+  /* Entfernt die Breitenbeschränkung */
 }
 
-/* Icon links */
-.tool-call-icon {
-  margin-right: 6px;
-  flex-shrink: 0;
-}
-
-/* Textteil auf 2 Zeilen clampen */
 .tool-call-text {
-  font-family: "Courier New", monospace;
-  font-size: 0.9em;
-  line-height: 1.2em;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
   overflow: hidden;
+  white-space: normal;
+  /* Erlaubt das Umbrechen des Textes */
+  text-overflow: initial;
+  /* Entfernt das Ellipsis */
+  width: 100%;
+  /* Nutzt die volle Breite */
+  max-width: none;
+  /* Entfernt die Breitenbeschränkung */
+  direction: ltr;
+  text-align: right;
+  transition: all 0.1s ease;
+}
+
+.tool-call-icon {
+  flex-shrink: 0;
 }
 
 .tool-call-bubble-container {

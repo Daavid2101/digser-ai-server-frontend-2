@@ -61,6 +61,9 @@ const ChatArea = React.forwardRef(
     const [isStreaming, setIsStreaming] = useState(false);
     const [toolCalls, setToolCalls] = useState([]);
     const [toolInput, setToolInput] = useState("");
+    const [toolInputDisplay, setToolInputDisplay] = useState("");
+    const toolInputRef = useRef(null);
+    const previousToolInputRef = useRef("");
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalOpen_knowledge, setIsModalOpen_knowledge] = useState(false);
@@ -87,6 +90,38 @@ const ChatArea = React.forwardRef(
       document.addEventListener("click", handleClickOutside);
       return () => document.removeEventListener("click", handleClickOutside);
     }, [showModeMenu]);
+
+    // Handle progressive tool input display with scrolling effect
+    useEffect(() => {
+      if (toolInput && toolInput !== previousToolInputRef.current) {
+        // Only show the new part that was added
+        const previousLength = previousToolInputRef.current.length;
+        const newText = toolInput.substring(previousLength);
+
+        if (newText) {
+          // Add new characters progressively
+          setToolInputDisplay((prev) => {
+            const updated = prev + newText;
+            // Keep only the last ~100 characters visible for smooth scrolling effect
+            const maxVisible = 100;
+            if (updated.length > maxVisible) {
+              return "..." + updated.substring(updated.length - maxVisible + 3);
+            }
+            return updated;
+          });
+        }
+
+        previousToolInputRef.current = toolInput;
+      }
+    }, [toolInput]);
+
+    // Reset tool input display when streaming starts/stops
+    useEffect(() => {
+      if (!isStreaming || !toolInput) {
+        setToolInputDisplay("");
+        previousToolInputRef.current = "";
+      }
+    }, [isStreaming, toolInput]);
 
     const maxRows = 10;
 
@@ -269,6 +304,8 @@ const ChatArea = React.forwardRef(
                 )
               );
               setToolInput("");
+              setToolInputDisplay("");
+              setToolInputDisplay("");
               setLoading(false);
               onReceived && onReceived(parsedData);
             } else if (parsedData.type === "text") {
@@ -281,7 +318,9 @@ const ChatArea = React.forwardRef(
               );
             } else if (parsedData.type === "tool_call") {
               const toolCall = JSON.parse(parsedData.content);
-              setToolInput(JSON.stringify(toolCall.tool_input));
+              setToolInput(
+                (prev) => prev + JSON.stringify(toolCall.tool_input)
+              );
             } else if (parsedData.type === "final_message") {
               setMessages((prev) =>
                 prev.map((msg, index) =>
@@ -412,7 +451,20 @@ const ChatArea = React.forwardRef(
                           style={{ textAlign: "right" }}
                         >
                           <span className="tool-call-icon">💭</span>
-                          <span>{toolInput}</span>
+                          <div
+                            ref={toolInputRef}
+                            className="tool-call-text"
+                            style={{
+                              overflow: "hidden",
+                              whiteSpace: "nowrap",
+                              direction: "ltr",
+                              textAlign: "right",
+                              fontFamily: "monospace",
+                              fontSize: "0.75em",
+                            }}
+                          >
+                            {toolInputDisplay || "..."}
+                          </div>
                         </div>
                       )}
                     {msg.attachments && (
