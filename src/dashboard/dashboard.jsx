@@ -28,6 +28,7 @@ const Dashboard = () => {
   const [editorReloadTrigger, setEditorReloadTrigger] = useState(0);
   const pageEditorRef = useRef(null);
   const chatAreaRef = useRef(null);
+  const canvasRef = useRef(null); // Neue Ref für CanvasComponent
   const [isResizing, setIsResizing] = useState(false);
   const [showCanvas, setShowCanvas] = useState(false);
 
@@ -514,22 +515,41 @@ const Dashboard = () => {
               setEditorReloadTrigger((prev) => prev + 1);
               refreshStatus();
               fetchPdf();
-              fetch(
-                `${API_URL}/chat/get_messages?project_id=${selectedProject.project_id}&task=${selectedTask}&user_id=${userId}`
-              )
-                .then((res) => res.json())
-                .then((data) => {
-                  setMessages(data);
-                  if (pageEditorRef.current) {
-                    pageEditorRef.current.restore();
-                  }
-                })
-                .catch((err) =>
-                  console.error(
-                    "Fehler beim Aktualisieren der Nachrichten:",
-                    err
-                  )
-                );
+
+              let retryAttempted = false;
+
+              const fetchMessages = () => {
+                fetch(
+                  `${API_URL}/chat/get_messages?project_id=${selectedProject.project_id}&task=${selectedTask}&user_id=${userId}`
+                )
+                  .then((res) => res.json())
+                  .then((data) => {
+                    const receivedMessages = Array.isArray(data) ? data : [];
+                    if (receivedMessages.length === 0 && !retryAttempted) {
+                      retryAttempted = true;
+                      console.log("Nachrichten leer, versuche erneut...");
+                      setTimeout(() => {
+                        fetchMessages();
+                      }, 1000);
+                    } else {
+                      setMessages(receivedMessages);
+                      if (pageEditorRef.current) {
+                        pageEditorRef.current.restore();
+                      }
+                      if (canvasRef.current) {
+                        canvasRef.current.fetchCanvasCode(); // Canvas neu laden
+                      }
+                    }
+                  })
+                  .catch((err) => {
+                    console.error(
+                      "Fehler beim Aktualisieren der Nachrichten:",
+                      err
+                    );
+                  });
+              };
+
+              fetchMessages();
             }}
             pageEditorRef={pageEditorRef}
           />
@@ -546,6 +566,7 @@ const Dashboard = () => {
         <div className="preview-content">
           {showCanvas ? (
             <CanvasComponent
+              ref={canvasRef} // Ref an CanvasComponent übergeben
               API_URL={API_URL}
               selectedProject={selectedProject}
               onExport={handleCanvasExport}

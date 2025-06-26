@@ -115,6 +115,12 @@ const ChatArea = React.forwardRef(
       }
     }, [toolInput]);
 
+    useEffect(() => {
+      if (rows === 1 && inputRef.current) {
+        inputRef.current.style.height = "auto";
+      }
+    }, [rows]);
+
     // Reset tool input display when streaming starts/stops
     useEffect(() => {
       if (!isStreaming || !toolInput) {
@@ -129,9 +135,7 @@ const ChatArea = React.forwardRef(
       const { value } = e.target;
       e.target.style.height = "auto";
       const explicitLines = value.split("\n").length;
-      const extraRow = e.target.scrollHeight > e.target.clientHeight ? 1 : 0;
-      const totalRows = Math.min(explicitLines + extraRow, maxRows);
-      setRows(totalRows);
+      setRows(Math.min(explicitLines, maxRows));
       setInputMessage(value);
       e.target.style.height = `${e.target.scrollHeight}px`;
     };
@@ -236,6 +240,7 @@ const ChatArea = React.forwardRef(
       setMessages((prev) => [...prev, userMsg]);
       if (!externalMessage && !canvasData) {
         setInputMessage("");
+        setRows(1);
       }
 
       const tempAssistantMsg = {

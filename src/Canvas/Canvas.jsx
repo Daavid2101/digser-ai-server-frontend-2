@@ -4,6 +4,8 @@ import React, {
   useRef,
   useCallback,
   createContext,
+  forwardRef,
+  useImperativeHandle,
 } from "react";
 import { AlertCircle, RefreshCw, Code, Play, ChevronDown } from "lucide-react";
 
@@ -218,270 +220,279 @@ const CanvasDropdown = ({ canvases, selectedCanvasIndex, onCanvasSelect }) => {
   );
 };
 
-const CanvasComponent = ({ API_URL, selectedProject, onExport }) => {
-  const [canvases, setCanvases] = useState([]);
-  const [selectedCanvasIndex, setSelectedCanvasIndex] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [lastFetch, setLastFetch] = useState(null);
-  const [exportData, setExportData] = useState(null);
-  const abortControllerRef = useRef(null);
-  const exportDataRef = useRef(null);
-  const [noCanvas, setNoCanvas] = useState(false);
+const CanvasComponent = forwardRef(
+  ({ API_URL, selectedProject, onExport }, ref) => {
+    const [canvases, setCanvases] = useState([]);
+    const [selectedCanvasIndex, setSelectedCanvasIndex] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [lastFetch, setLastFetch] = useState(null);
+    const [exportData, setExportData] = useState(null);
+    const abortControllerRef = useRef(null);
+    const exportDataRef = useRef(null);
+    const [noCanvas, setNoCanvas] = useState(false);
 
-  const stableSetExportData = useCallback((data) => {
-    setExportData(data);
-  }, []);
+    const stableSetExportData = useCallback((data) => {
+      setExportData(data);
+    }, []);
 
-  const handleExport = useCallback(() => {
-    if (!exportDataRef.current) {
-      alert("No data available to export");
-      return;
-    }
-    if (onExport) {
-      onExport(exportDataRef.current);
-    }
-  }, [onExport]);
-
-  const fetchCanvasCode = useCallback(async () => {
-    if (!API_URL || !selectedProject?.project_id) {
-      setError("Missing API_URL or selectedProject");
-      return;
-    }
-    setError(null);
-    setNoCanvas(false);
-    setLoading(true);
-
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
-
-    abortControllerRef.current = new AbortController();
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch(
-        `${API_URL}/canvas/canvas_codes/${selectedProject.project_id}`,
-        {
-          signal: abortControllerRef.current.signal,
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (response.status === 404) {
-        setNoCanvas(true);
-        setCanvases([]);
+    const handleExport = useCallback(() => {
+      if (!exportDataRef.current) {
+        alert("No data available to export");
         return;
       }
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      if (onExport) {
+        onExport(exportDataRef.current);
       }
+    }, [onExport]);
 
-      const data = await response.json();
-
-      let canvasData = [];
-      if (data.code && Array.isArray(data.code)) {
-        const projectData = data.code.find(
-          (project) => project.project_id === selectedProject.project_id
-        );
-        if (projectData && projectData.canvases) {
-          canvasData = projectData.canvases;
-        }
-      } else if (data.canvases && Array.isArray(data.canvases)) {
-        canvasData = data.canvases;
+    const fetchCanvasCode = useCallback(async () => {
+      if (!API_URL || !selectedProject?.project_id) {
+        setError("Missing API_URL or selectedProject");
+        return;
       }
+      setError(null);
+      setNoCanvas(false);
+      setLoading(true);
 
-      if (!Array.isArray(canvasData) || canvasData.length === 0) {
-        throw new Error("No canvas data found");
-      }
-
-      setCanvases(canvasData);
-      setSelectedCanvasIndex(0);
-      setLastFetch(new Date().toISOString());
-    } catch (err) {
-      if (err.name === "AbortError") return;
-      console.error("Failed to fetch canvas code:", err);
-      setError(err.message);
-      setCanvases([]);
-    } finally {
-      setLoading(false);
-      abortControllerRef.current = null;
-    }
-  }, [API_URL, selectedProject?.project_id]);
-
-  useEffect(() => {
-    fetchCanvasCode();
-    return () => {
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
       }
+
+      abortControllerRef.current = new AbortController();
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await fetch(
+          `${API_URL}/canvas/canvas_codes/${selectedProject.project_id}`,
+          {
+            signal: abortControllerRef.current.signal,
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (response.status === 404) {
+          setNoCanvas(true);
+          setCanvases([]);
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+
+        let canvasData = [];
+        if (data.code && Array.isArray(data.code)) {
+          const projectData = data.code.find(
+            (project) => project.project_id === selectedProject.project_id
+          );
+          if (projectData && projectData.canvases) {
+            canvasData = projectData.canvases;
+          }
+        } else if (data.canvases && Array.isArray(data.canvases)) {
+          canvasData = data.canvases;
+        }
+
+        if (!Array.isArray(canvasData) || canvasData.length === 0) {
+          throw new Error("No canvas data found");
+        }
+
+        setCanvases(canvasData);
+        setSelectedCanvasIndex(0);
+        setLastFetch(new Date().toISOString());
+      } catch (err) {
+        if (err.name === "AbortError") return;
+        console.error("Failed to fetch canvas code:", err);
+        setError(err.message);
+        setCanvases([]);
+      } finally {
+        setLoading(false);
+        abortControllerRef.current = null;
+      }
+    }, [API_URL, selectedProject?.project_id]);
+
+    useImperativeHandle(ref, () => ({
+      fetchCanvasCode,
+    }));
+
+    useEffect(() => {
+      fetchCanvasCode();
+      return () => {
+        if (abortControllerRef.current) {
+          abortControllerRef.current.abort();
+        }
+      };
+    }, [fetchCanvasCode]);
+
+    const handleRetry = () => {
+      fetchCanvasCode();
     };
-  }, [fetchCanvasCode]);
 
-  const handleRetry = () => {
-    fetchCanvasCode();
-  };
+    const handleCodeError = (codeError) => {
+      console.error("Code execution error:", codeError);
+    };
 
-  const handleCodeError = (codeError) => {
-    console.error("Code execution error:", codeError);
-  };
+    const handleCanvasSelect = (index) => {
+      setSelectedCanvasIndex(index);
+    };
 
-  const handleCanvasSelect = (index) => {
-    setSelectedCanvasIndex(index);
-  };
+    const currentCanvas = canvases[selectedCanvasIndex];
+    const currentCode = currentCanvas?.code || "";
 
-  const currentCanvas = canvases[selectedCanvasIndex];
-  const currentCode = currentCanvas?.code || "";
+    if (noCanvas) {
+      return (
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+          <div className="flex items-center mb-4">
+            <Code className="text-gray-500 mr-2" size={20} />
+            <h3 className="text-gray-700 font-semibold">
+              Keine Canvas vorhanden
+            </h3>
+          </div>
+          <p className="text-gray-600 mb-5">
+            Für dieses Projekt wurde noch kein Canvas erstellt. Sie können ein
+            Canvas nutzen, um beliebige Datenanalysen durchzuführen. Wenn Sie
+            eine Analyse erstellen möchten, beschreiben Sie der KI / dem
+            Assistant, welche Daten analysiert werden sollen und welche freien
+            Parameter benötigt werden.
+          </p>
+          <button
+            onClick={handleRetry}
+            className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors flex items-center"
+          >
+            <RefreshCw className="mr-2" size={16} />
+            Aktualisieren
+          </button>
+        </div>
+      );
+    }
 
-  if (noCanvas) {
+    if (loading) {
+      return (
+        <div className="flex items-center justify-center p-8 bg-gray-50 rounded-lg border border-gray-200">
+          <RefreshCw className="animate-spin text-blue-500 mr-3" size={20} />
+          <span className="text-gray-600">Loading canvas code...</span>
+        </div>
+      );
+    }
+
+    if (error) {
+      return (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+          <div className="flex items-center mb-4">
+            <AlertCircle className="text-red-500 mr-2" size={20} />
+            <h3 className="text-red-800 font-semibold">
+              Failed to Load Canvas
+            </h3>
+          </div>
+          <div className="text-red-700 mb-4">
+            <strong>Error:</strong> {error}
+          </div>
+          <div className="text-red-600 text-sm mb-4">
+            <strong>Project ID:</strong>{" "}
+            {selectedProject?.project_id || "Not provided"}
+            <br />
+            <strong>API URL:</strong> {API_URL || "Not provided"}
+          </div>
+          <button
+            onClick={handleRetry}
+            className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors flex items-center"
+          >
+            <RefreshCw className="mr-2" size={16} />
+            Retry
+          </button>
+        </div>
+      );
+    }
+
+    if (!canvases.length) {
+      return (
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+          <div className="flex items-center mb-4">
+            <Code className="text-gray-500 mr-2" size={20} />
+            <h3 className="text-gray-700 font-semibold">No Canvas Code</h3>
+          </div>
+          <p className="text-gray-600 mb-4">
+            No executable code found for this project.
+          </p>
+          <button
+            onClick={handleRetry}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors flex items-center"
+          >
+            <RefreshCw className="mr-2" size={16} />
+            Refresh
+          </button>
+        </div>
+      );
+    }
+
     return (
-      <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
-        <div className="flex items-center mb-4">
-          <Code className="text-gray-500 mr-2" size={20} />
-          <h3 className="text-gray-700 font-semibold">
-            Keine Canvas vorhanden
-          </h3>
-        </div>
-        <p className="text-gray-600 mb-5">
-          Für dieses Projekt wurde noch kein Canvas erstellt. Sie können ein
-          Canvas nutzen, um beliebige Datenanalysen durchzuführen. Wenn Sie eine
-          Analyse erstellen möchten, beschreiben Sie der KI / dem Assistant,
-          welche Daten analysiert werden sollen und welche freien Parameter
-          benötigt werden.
-        </p>
-        <button
-          onClick={handleRetry}
-          className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors flex items-center"
-        >
-          <RefreshCw className="mr-2" size={16} />
-          Aktualisieren
-        </button>
-      </div>
-    );
-  }
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center p-8 bg-gray-50 rounded-lg border border-gray-200">
-        <RefreshCw className="animate-spin text-blue-500 mr-3" size={20} />
-        <span className="text-gray-600">Loading canvas code...</span>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-        <div className="flex items-center mb-4">
-          <AlertCircle className="text-red-500 mr-2" size={20} />
-          <h3 className="text-red-800 font-semibold">Failed to Load Canvas</h3>
-        </div>
-        <div className="text-red-700 mb-4">
-          <strong>Error:</strong> {error}
-        </div>
-        <div className="text-red-600 text-sm mb-4">
-          <strong>Project ID:</strong>{" "}
-          {selectedProject?.project_id || "Not provided"}
-          <br />
-          <strong>API URL:</strong> {API_URL || "Not provided"}
-        </div>
-        <button
-          onClick={handleRetry}
-          className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors flex items-center"
-        >
-          <RefreshCw className="mr-2" size={16} />
-          Retry
-        </button>
-      </div>
-    );
-  }
-
-  if (!canvases.length) {
-    return (
-      <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
-        <div className="flex items-center mb-4">
-          <Code className="text-gray-500 mr-2" size={20} />
-          <h3 className="text-gray-700 font-semibold">No Canvas Code</h3>
-        </div>
-        <p className="text-gray-600 mb-4">
-          No executable code found for this project.
-        </p>
-        <button
-          onClick={handleRetry}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors flex items-center"
-        >
-          <RefreshCw className="mr-2" size={16} />
-          Refresh
-        </button>
-      </div>
-    );
-  }
-
-  return (
-    <ExportContext.Provider value={{ setExportData: stableSetExportData }}>
-      <div className="canvas-container">
-        <div className="bg-gray-100 border-b border-gray-200 px-4 py-2">
-          <div className="flex items-center justify-between">
-            <div className="flex flex-col">
-              <div className="flex items-center mb-2">
-                <Play className="text-green-600 mr-2" size={16} />
-                <span className="text-sm font-medium text-gray-700">
-                  Canvas: {selectedProject?.name || selectedProject?.project_id}
-                </span>
-                {canvases.length > 1 && (
-                  <span className="ml-2 text-xs text-gray-500">
-                    ({canvases.length} verfügbar)
+      <ExportContext.Provider value={{ setExportData: stableSetExportData }}>
+        <div className="canvas-container">
+          <div className="bg-gray-100 border-b border-gray-200 px-4 py-2">
+            <div className="flex items-center justify-between">
+              <div className="flex flex-col">
+                <div className="flex items-center mb-2">
+                  <Play className="text-green-600 mr-2" size={16} />
+                  <span className="text-sm font-medium text-gray-700">
+                    Canvas:{" "}
+                    {selectedProject?.name || selectedProject?.project_id}
                   </span>
-                )}
-              </div>
-              <div className="flex items-center space-x-2 mb-2">
-                <button
-                  onClick={handleRetry}
-                  className="text-gray-500 hover:text-gray-700 transition-colors"
-                  title="Refresh canvas"
-                >
-                  <RefreshCw size={14} />
-                </button>
-                {lastFetch && (
-                  <span className="text-xs text-gray-500">
-                    Last updated: {new Date(lastFetch).toLocaleTimeString()}
-                  </span>
-                )}
-              </div>
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={handleExport}
-                  className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition-colors"
-                >
-                  Daten an KI senden
-                </button>
-                <CanvasDropdown
-                  canvases={canvases}
-                  selectedCanvasIndex={selectedCanvasIndex}
-                  onCanvasSelect={handleCanvasSelect}
-                />
+                  {canvases.length > 1 && (
+                    <span className="ml-2 text-xs text-gray-500">
+                      ({canvases.length} verfügbar)
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center space-x-2 mb-2">
+                  <button
+                    onClick={handleRetry}
+                    className="text-gray-500 hover:text-gray-700 transition-colors"
+                    title="Refresh canvas"
+                  >
+                    <RefreshCw size={14} />
+                  </button>
+                  {lastFetch && (
+                    <span className="text-xs text-gray-500">
+                      Last updated: {new Date(lastFetch).toLocaleTimeString()}
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={handleExport}
+                    className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition-colors"
+                  >
+                    Daten an KI senden
+                  </button>
+                  <CanvasDropdown
+                    canvases={canvases}
+                    selectedCanvasIndex={selectedCanvasIndex}
+                    onCanvasSelect={handleCanvasSelect}
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div className="canvas-content">
-          <CodeExecutionErrorBoundary>
-            <DynamicComponentWrapper
-              code={currentCode}
-              onError={handleCodeError}
-              onExport={(data) => (exportDataRef.current = data)}
-            />
-          </CodeExecutionErrorBoundary>
+          <div className="canvas-content">
+            <CodeExecutionErrorBoundary>
+              <DynamicComponentWrapper
+                code={currentCode}
+                onError={handleCodeError}
+                onExport={(data) => (exportDataRef.current = data)}
+              />
+            </CodeExecutionErrorBoundary>
+          </div>
         </div>
-      </div>
-    </ExportContext.Provider>
-  );
-};
+      </ExportContext.Provider>
+    );
+  }
+);
 
 export default CanvasComponent;
